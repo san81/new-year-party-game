@@ -21,44 +21,7 @@ const leftLayer = document.querySelector('.layer-left');
         let jsonIndex = 0;
         let selectedCategory;
 
-        // JSON list with categories
-        const jsonData = {
-            "logo": [
-                "Amazon.png",
-                "Apple.png",
-                "McDonalds.png",
-                "MrBeast.png" 
-            ],
-            "kitchenObject": [
-                "Fork.png",
-                "Spoon.png",
-                "Blender.png",
-                "Napkin.png",
-                "Glass.png",
-                "RollingPin.png",
-                "Knife.png",
-                "Spatula.png",
-                "Shredder.png",
-                "Pan.png",
-                "HandBlender.png"
-            ],
-            "animals": [
-                "Tiger.png",
-                "Cat.png",
-                "Cheetah.png",
-                "Zebra.png"
-            ],
-            "movieNameFromHerosPic": [
-                "Lion.png"
-            ],
-            "movieNameFromPoster": [
-                "Lion.png"
-            ],
-            "seeds": [
-                "Lion.png"
-            ]
-
-        };
+        
 
         // Populate category dropdown
         for (let category in jsonData) {
@@ -118,6 +81,7 @@ const leftLayer = document.querySelector('.layer-left');
         }
 
         function restartAnimation() {
+            shuffleJsonDataObject();
             resetAnimations();
             startLeftAnimation();
             isLeftActive = true;

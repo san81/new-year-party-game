@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>List Local Files</title>
+</head>
+<body>
+    <input type="file" id="fileInput" value="/Users/santhoshgandhe/github/new-year-party-game/NewYearParty/items"/>
+    <ul id="fileList"></ul>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+
+        fileInput.addEventListener('change', (event) => {
+            fileList.innerHTML = '';
+            for (const file of event.target.files) {
+                const listItem = document.createElement('li');
+                listItem.textContent = file.name;
+                fileList.appendChild(listItem);
+            }
+        });
+    </script>
+</body>
+</html>
