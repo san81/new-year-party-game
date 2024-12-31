@@ -24,48 +24,38 @@ const leftLayer = document.querySelector('.layer-left');
         // JSON list with categories
         const jsonData = {
             "logo": [
-                { "0": "Amazon" },
-                { "1": "Apple" },
-                { "2": "McDonalds" },
-                { "3": "Mr Beast" }
+                "Amazon.png",
+                "Apple.png",
+                "McDonalds.png",
+                "MrBeast.png" 
             ],
             "kitchenObject": [
-                { "0": "Fork" },
-                { "1": "Spoon" },
-                { "2": "Blender" },
-                { "3": "Napkin" },
-                { "4": "Glass"},
-                { "5": "Rolling Pin"},
-                { "6": "knife"},
-                { "7": "Spatula"},
-                { "8": "Shredder"},
-                { "9": "Pan"},
-                { "10": "Pan"},
-                { "11": "Hand Blender"}
+                "Fork.png",
+                "Spoon.png",
+                "Blender.png",
+                "Napkin.png",
+                "Glass.png",
+                "RollingPin.png",
+                "Knife.png",
+                "Spatula.png",
+                "Shredder.png",
+                "Pan.png",
+                "HandBlender.png"
             ],
             "animals": [
-                { "0": "Tiger" },
-                { "1": "Cat" },
-                { "2": "Cheetah" },
-                { "3": "Zebra" }
+                "Tiger.png",
+                "Cat.png",
+                "Cheetah.png",
+                "Zebra.png"
             ],
             "movieNameFromHerosPic": [
-                { "item": "Lion" },
-                { "item": "Elephant" },
-                { "item": "Giraffe" },
-                { "item": "Zebra" }
+                "Lion.png"
             ],
             "movieNameFromPoster": [
-                { "item": "Lion" },
-                { "item": "Elephant" },
-                { "item": "Giraffe" },
-                { "item": "Zebra" }
+                "Lion.png"
             ],
             "seeds": [
-                { "item": "Lion" },
-                { "item": "Elephant" },
-                { "item": "Giraffe" },
-                { "item": "Zebra" }
+                "Lion.png"
             ]
 
         };
@@ -205,7 +195,7 @@ const leftLayer = document.querySelector('.layer-left');
 
             // Trigger bomb blast on the completed side
             triggerBombBlast(isLeftActive ? 'left' : 'right');
-            jsonItemDisplay.innerHTML += "<div>"+jsonData[selectedCategory][jsonIndex][jsonIndex]+"</div>";
+            jsonItemDisplay.innerHTML += "<div>"+jsonData[selectedCategory][jsonIndex].slice(0, -4)+"</div>";
         }
 
         function startTimer() {
@@ -235,8 +225,8 @@ const leftLayer = document.querySelector('.layer-left');
         }
 
         function updateJsonItem() {
-            const item = jsonData[selectedCategory][jsonIndex].item;
-            jsonItemDisplay.innerHTML = "<img src='items/"+selectedCategory+"/"+jsonIndex+".png'></img>"
+            const item = jsonData[selectedCategory][jsonIndex];
+            jsonItemDisplay.innerHTML = "<img src='items/"+selectedCategory+"/"+item+"'></img>"
             if (isLeftActive) {
                 jsonItemDisplay.style.left = '5%';
             } else {
