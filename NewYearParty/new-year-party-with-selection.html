@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Year Party Game</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            background-color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .layer-left, .layer-right {
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 100%;
+            background-color: red;
+        }
+        .layer-left {
+            right: 50%;
+            animation: expandLeft 3s ease-in-out forwards;
+            animation-play-state: paused;
+        }
+        .layer-right {
+            left: 50%;
+            animation: expandRight 3s ease-in-out forwards;
+            animation-play-state: paused;
+        }
+        @keyframes expandLeft {
+            0% { width: 0; }
+            100% { width: 50%; }
+        }
+        @keyframes expandRight {
+            0% { width: 0; }
+            100% { width: 50%; }
+        }
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .counters {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            font-size: 18px;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .timer {
+            position: absolute;
+            top: 80px;
+            font-size: 120px;
+            z-index: 20;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            transition: left 0.3s ease;
+        }
+        .answer-item {
+            position: absolute;
+            top: 20%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            z-index: 20;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            transition: left 0.3s ease;
+            text-align: center;
+            width: 40%;
+        }
+        .json-item {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            z-index: 20;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            transition: left 0.3s ease;
+            text-align: center;
+            width: 40%;
+        }
+        .category-selection {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            z-index: 30;
+        }
+        .category-selection select {
+            font-size: 18px;
+            padding: 5px;
+        }
+        .category-selection button {
+            display: block;
+            margin-top: 10px;
+        }
+
+        .bomb-blast {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ff9900;
+            border-radius: 50%;
+            opacity: 0;
+            z-index: 25;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(40);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(50);
+                opacity: 0;
+            }
+        }
+
+        @keyframes shockwave {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+                border: 2px solid #ff9900;
+            }
+            100% {
+                transform: scale(60);
+                opacity: 0;
+                border: 2px solid #ff990000;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="layer-left"></div>
+        <div class="layer-right"></div>
+        <div class="controls">
+            <button id="toggleBtn">Pause</button>
+            <button id="restartBtn">Restart</button>
+            <button id="switchBtn">Right Answer</button>
+        </div>
+        <div class="counters">
+            Pink Team Score: <span id="leftCounter">0</span> | 
+            Blue Team Score: <span id="rightCounter">0</span>
+        </div>
+        <div class="timer" id="timer">5</div>
+        <div class="json-item" id="jsonItem">
+        </div>
+        <div class="category-selection" id="categorySelection">
+            <select id="categorySelect"></select>
+            <button id="startBtn">Start Animation</button>
+        </div>
+    </div>
+
+    <audio id="tickingSound" loop>
+        <source src="sounds/clock-tick-101150.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <audio id="wrapSound">
+        <source src="sounds/awesome-kick-drum-41824.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <script src="scripts/party-script.js"></script>
+
+    <script>
+        
+
+        toggleBtn.addEventListener('click', toggleAnimation);
+        restartBtn.addEventListener('click', () => {
+            categorySelection.style.display = 'block';
+            stopAnimation()
+        });
+        switchBtn.addEventListener('click', switchAnimation);
+
+        leftLayer.addEventListener('animationend', stopAnimation);
+        rightLayer.addEventListener('animationend', stopAnimation);
+
+        // Initial setup
+        categorySelection.style.display = 'block';
+        toggleBtn.style.display = 'none';
+        switchBtn.style.display = 'none';
+    </script>
+</body>
+</html>

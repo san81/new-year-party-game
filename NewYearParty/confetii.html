@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category-based Split Animation with Bomb Blast</title>
+    <style>
+        /* ... (previous styles remain the same) ... */
+
+        .bomb-blast {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ff9900;
+            border-radius: 50%;
+            opacity: 0;
+            z-index: 25;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(40);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(50);
+                opacity: 0;
+            }
+        }
+
+        @keyframes shockwave {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+                border: 2px solid #ff9900;
+            }
+            100% {
+                transform: scale(60);
+                opacity: 0;
+                border: 2px solid #ff990000;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ... (previous HTML structure remains the same) ... -->
+
+    <script>
+        // ... (previous variable declarations and functions remain the same) ...
+
+        function triggerBombBlast(side) {
+            const x = side === 'left' ? '25%' : '75%';
+            const blast = document.createElement('div');
+            blast.className = 'bomb-blast';
+            blast.style.left = x;
+            blast.style.top = '50%';
+            document.body.appendChild(blast);
+
+            // Explosion
+            blast.style.animation = 'explode 0.5s ease-out forwards';
+
+            // Shockwave
+            const shockwave = document.createElement('div');
+            shockwave.className = 'bomb-blast';
+            shockwave.style.left = x;
+            shockwave.style.top = '50%';
+            document.body.appendChild(shockwave);
+            shockwave.style.animation = 'shockwave 0.5s ease-out forwards';
+
+            // Remove elements after animation
+            setTimeout(() => {
+                document.body.removeChild(blast);
+                document.body.removeChild(shockwave);
+            }, 500);
+        }
+
+        function stopAnimation() {
+            isPlaying = false;
+            leftLayer.style.animationPlayState = 'paused';
+            rightLayer.style.animationPlayState = 'paused';
+            toggleBtn.textContent = 'Resume';
+            switchBtn.disabled = true;
+            tickingSound.pause();
+            wrapSound.play();
+            clearInterval(timerInterval);
+            timerDisplay.textContent = '0';
+            categorySelection.style.display = 'block';
+            toggleBtn.style.display = 'none';
+            switchBtn.style.display = 'none';
+
+            // Trigger bomb blast on the completed side
+            triggerBombBlast(isLeftActive ? 'left' : 'right');
+        }
+
+        // ... (other functions remain the same) ...
+        triggerBombBlast('right');
+
+        /*leftLayer.addEventListener('animationend', () => {
+            stopAnimation();
+            triggerBombBlast('left');
+        });
+        rightLayer.addEventListener('animationend', () => {
+            stopAnimation();
+            triggerBombBlast('right');
+        });*/
+
+        // ... (rest of the code remains the same) ...
+    </script>
+</body>
+</html>
