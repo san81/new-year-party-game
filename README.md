@@ -19,4 +19,4 @@ Add your own categories or custom items to make the game uniquely yours and extr
 ## Ready to Play?  
 Click below and let the laughter (and competition) begin! 🕹️🎉  
 
-[Start The Game](#https://san81.github.io/new-year-party-game/NewYearParty/index.html)
+[Start The Game](#NewYearParty/index.html)
