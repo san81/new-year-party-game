@@ -1,9 +1,22 @@
 # new-year-party-game
-Fun Game to play at friends and family gathering. Identify and say the name of the object shown on the screen with in 5 seconds
+# 🎉 Fun Game for Friends & Family Gatherings! 🎉  
 
-Game Rules:
-- Two players or Two groups can play at a time
-- Host should present a shard screen by casting into a shared living room at the gathering place that is visible to all the players
-- Choose a category and start the game
-- Identify and say the name of the object shown on the screen with in 5 seconds
-- If any one party failed to answer then the other side will get a point
+## Challenge:  
+Spot and shout out the name of the object on the screen in just **5 seconds**!  
+
+## How to Play:  
+1. Grab a buddy or split into two groups—let the competition begin!  
+2. The host casts the game onto a shared screen that everyone can see.  
+3. Pick a category and dive in!  
+4. Each player/group has **5 seconds** to correctly identify the object on the screen.  
+5. The host clicks the **“Right Answer”** button to track points for each turn.  
+6. If one team misses, the other scores!  
+7. Replay the game in the same category or spice it up by switching to a new one.  
+
+## ✨ Pro Tip:  
+Add your own categories or custom items to make the game uniquely yours and extra entertaining!  
+
+## Ready to Play?  
+Click below and let the laughter (and competition) begin! 🕹️🎉  
+
+[Start The Game](#https://san81.github.io/new-year-party-game/NewYearParty/index.html)
