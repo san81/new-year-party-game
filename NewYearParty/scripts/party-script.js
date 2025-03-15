@@ -99,6 +99,7 @@ const leftLayer = document.querySelector('.layer-left');
             resetTimer();
             updateTimerPosition();
             updateJsonItem();
+            startVoiceInputControl();
         }
 
         function switchAnimation() {
