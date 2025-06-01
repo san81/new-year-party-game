@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buzz Word Guessing Game</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .game-header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .language-selector {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 100;
+        }
+        
+        .language-selector select {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .language-selector select option {
+            background: #333;
+            color: white;
+        }
+        
+        .game-title {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .topic-selection {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .topic-options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .topic-btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .topic-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        .action-buttons {
+            margin-top: 20px;
+        }
+        
+        .action-btn {
+            padding: 12px 25px;
+            margin: 0 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .start-btn {
+            background: linear-gradient(45deg, #48CAE4, #0077B6);
+            color: white;
+        }
+        
+        .back-btn {
+            background: linear-gradient(45deg, #6C757D, #495057);
+            color: white;
+        }
+        
+        .game-area {
+            display: none;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .game-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .timer-display {
+            font-size: 3em;
+            text-align: center;
+            margin: 20px 0;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .score-display {
+            font-size: 1.5em;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .voice-status {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .user-input-display {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            min-height: 40px;
+            border: 2px solid transparent;
+        }
+        
+        .correct-match {
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.3);
+        }
+        
+        .buzz-words-area {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .buzz-words-title {
+            text-align: center;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+        
+        .buzz-words-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .buzz-word-row {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .buzz-word-item {
+            padding: 12px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .buzz-word-item.revealed {
+            background: rgba(40, 167, 69, 0.3);
+            color: #fff;
+        }
+        
+        .buzz-word-item.hidden:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .score-value {
+            text-align: right;
+            padding: 12px;
+            font-weight: bold;
+        }
+        
+        .game-over {
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .game-over-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .final-score {
+            font-size: 2.5em;
+            color: #FFD700;
+            margin: 20px 0;
+        }
+        
+        .final-results {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+        
+        .final-buzz-words {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .final-buzz-words h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #FFD700;
+        }
+        
+        .final-buzz-word-item {
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .final-buzz-word-item.revealed {
+            background: rgba(40, 167, 69, 0.3);
+            border-left: 4px solid #28a745;
+        }
+        
+        .final-buzz-word-item.missed {
+            background: rgba(220, 53, 69, 0.3);
+            border-left: 4px solid #dc3545;
+        }
+        
+        .final-stats {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .final-stats h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #FFD700;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .play-again-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .final-results {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .user-inputs-history {
+            max-height: 200px;
+            overflow-y: auto;
+            margin: 20px 0;
+        }
+        
+        .loading {
+            text-align: center;
+            font-size: 1.2em;
+            margin: 20px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .game-area {
+                grid-template-columns: 1fr;
+            }
+            
+            .topic-options {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .topic-btn {
+                width: 80%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="game-header">
+            <div class="language-selector">
+                <select id="languageSelect">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी (Hindi)</option>
+                    <option value="te">తెలుగు (Telugu)</option>
+                </select>
+            </div>
+            <h1 class="game-title" data-i18n="game-title">🎯 Buzz Word Challenge</h1>
+            <p data-i18n="game-subtitle">Guess the trending buzz words about your chosen topic!</p>
+        </div>
+
+        <!-- Topic Selection Screen -->
+        <div id="topicSelection" class="topic-selection">
+            <h2 data-i18n="choose-topic">Choose Your Topic</h2>
+            <p data-i18n="select-topic-desc">Select one of these two randomly chosen topics:</p>
+            <div class="topic-options">
+                <button id="topic1" class="topic-btn"></button>
+                <button id="topic2" class="topic-btn"></button>
+            </div>
+            <div class="action-buttons">
+                <button id="refreshTopics" class="action-btn back-btn" data-i18n="get-new-topics">🔄 Get New Topics</button>
+            </div>
+        </div>
+
+        <!-- Loading Screen -->
+        <div id="loadingScreen" class="loading" style="display: none;">
+            <h2 data-i18n="generating-words">🔍 Generating buzz words...</h2>
+            <p data-i18n="please-wait">Please wait while we fetch the trending terms for your topic.</p>
+        </div>
+
+        <!-- Buzz Words Preview -->
+        <div id="buzzWordsPreview" class="topic-selection" style="display: none;">
+            <h2 id="selectedTopicTitle"></h2>
+            <p data-i18n="preview-desc">Here are the buzz words you need to guess (all hidden):</p>
+            <div id="previewTable"></div>
+            <div class="action-buttons">
+                <button id="startGame" class="action-btn start-btn" data-i18n="start-game">🎮 Start Game</button>
+                <button id="backToTopics" class="action-btn back-btn" data-i18n="back-to-topics">← Back to Topics</button>
+            </div>
+        </div>
+
+        <!-- Game Area -->
+        <div id="gameArea" class="game-area">
+            <div class="game-info">
+                <div class="timer-display" id="timerDisplay">90</div>
+                <div class="score-display"><span data-i18n="score">Score</span>: <span id="currentScore">0</span></div>
+                
+                <div class="voice-status">
+                    <div id="voiceStatus" data-i18n="ready-listening">Ready to start listening...</div>
+                    <div id="userInputDisplay" class="user-input-display" data-i18n="voice-input-placeholder">Your voice input will appear here</div>
+                </div>
+                
+                <div class="user-inputs-history">
+                    <h4 data-i18n="your-attempts">Your Attempts:</h4>
+                    <div id="inputHistory"></div>
+                </div>
+            </div>
+            
+            <div class="buzz-words-area">
+                <div class="buzz-words-title"><span data-i18n="buzz-words-for">Buzz Words for</span> <span id="gameTopicTitle"></span></div>
+                <table class="buzz-words-table">
+                    <tbody id="buzzWordsTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="gameOver" class="game-over">
+            <div class="game-over-header">
+                <h2 data-i18n="game-over">🎉 Game Over!</h2>
+                <div class="final-score" id="finalScore">0</div>
+                <div id="gameResult"></div>
+            </div>
+            
+            <div class="final-results">
+                <div class="final-buzz-words">
+                    <h3 data-i18n="all-buzz-words">All Buzz Words</h3>
+                    <div id="finalBuzzWordsList"></div>
+                </div>
+                
+                <div class="final-stats">
+                    <h3 data-i18n="game-statistics">Game Statistics</h3>
+                    <div class="stat-item">
+                        <span data-i18n="topic">Topic:</span>
+                        <span id="finalTopicName"></span>
+                    </div>
+                    <div class="stat-item">
+                        <span data-i18n="total-score">Total Score:</span>
+                        <span id="finalScoreValue"></span>
+                    </div>
+                    <div class="stat-item">
+                        <span data-i18n="words-found">Words Found:</span>
+                        <span id="wordsFoundCount"></span>
+                    </div>
+                    <div class="stat-item">
+                        <span data-i18n="words-missed">Words Missed:</span>
+                        <span id="wordsMissedCount"></span>
+                    </div>
+                    <div class="stat-item">
+                        <span data-i18n="time-used">Time Used:</span>
+                        <span id="timeUsed"></span>
+                    </div>
+                    <div class="stat-item">
+                        <span data-i18n="success-rate">Success Rate:</span>
+                        <span id="successRate"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="play-again-section">
+                <button id="playAgain" class="action-btn start-btn" data-i18n="play-again">🔄 Play Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Internationalization (i18n) translations
+        const translations = {
+            en: {
+                "game-title": "🎯 Buzz Word Challenge",
+                "game-subtitle": "Guess the trending buzz words about your chosen topic!",
+                "choose-topic": "Choose Your Topic",
+                "select-topic-desc": "Select one of these two randomly chosen topics:",
+                "get-new-topics": "🔄 Get New Topics",
+                "generating-words": "🔍 Generating buzz words...",
+                "please-wait": "Please wait while we fetch the trending terms for your topic.",
+                "preview-desc": "Here are the buzz words you need to guess (all hidden):",
+                "start-game": "🎮 Start Game",
+                "back-to-topics": "← Back to Topics",
+                "score": "Score",
+                "ready-listening": "Ready to start listening...",
+                "voice-input-placeholder": "Your voice input will appear here",
+                "your-attempts": "Your Attempts:",
+                "buzz-words-for": "Buzz Words for",
+                "game-over": "🎉 Game Over!",
+                "all-buzz-words": "All Buzz Words",
+                "game-statistics": "Game Statistics",
+                "topic": "Topic:",
+                "total-score": "Total Score:",
+                "words-found": "Words Found:",
+                "words-missed": "Words Missed:",
+                "time-used": "Time Used:",
+                "success-rate": "Success Rate:",
+                "play-again": "🔄 Play Again",
+                "points": "points",
+                "seconds": "seconds",
+                "congratulations": "🎉 Congratulations! You found all the buzz words!",
+                "time-remaining": "Time remaining:",
+                "times-up": "⏰ Time's up!",
+                "revealed-words": "You revealed {found} out of {total} buzz words.",
+                "listening": "🎤 Listening...",
+                "speech-error": "Speech recognition not supported in this browser"
+            },
+            hi: {
+                "game-title": "🎯 बज़ वर्ड चैलेंज",
+                "game-subtitle": "अपने चुने गए विषय के बारे में ट्रेंडिंग बज़ वर्ड्स का अनुमान लगाएं!",
+                "choose-topic": "अपना विषय चुनें",
+                "select-topic-desc": "इन दो यादृच्छिक रूप से चुने गए विषयों में से एक का चयन करें:",
+                "get-new-topics": "🔄 नए विषय प्राप्त करें",
+                "generating-words": "🔍 बज़ वर्ड्स जेनरेट कर रहे हैं...",
+                "please-wait": "कृपया प्रतीक्षा करें जब तक हम आपके विषय के लिए ट्रेंडिंग शब्द लाते हैं।",
+                "preview-desc": "यहाँ वे बज़ वर्ड्स हैं जिनका आपको अनुमान लगाना है (सभी छुपे हुए):",
+                "start-game": "🎮 गेम शुरू करें",
+                "back-to-topics": "← विषयों पर वापस जाएं",
+                "score": "स्कोर",
+                "ready-listening": "सुनना शुरू करने के लिए तैयार...",
+                "voice-input-placeholder": "आपका वॉइस इनपुट यहाँ दिखाई देगा",
+                "your-attempts": "आपके प्रयास:",
+                "buzz-words-for": "बज़ वर्ड्स के लिए",
+                "game-over": "🎉 गेम समाप्त!",
+                "all-buzz-words": "सभी बज़ वर्ड्स",
+                "game-statistics": "गेम के आंकड़े",
+                "topic": "विषय:",
+                "total-score": "कुल स्कोर:",
+                "words-found": "मिले शब्द:",
+                "words-missed": "छूटे शब्द:",
+                "time-used": "समय का उपयोग:",
+                "success-rate": "सफलता दर:",
+                "play-again": "🔄 फिर से खेलें",
+                "points": "अंक",
+                "seconds": "सेकंड",
+                "congratulations": "🎉 बधाई हो! आपने सभी बज़ वर्ड्स खोज लिए!",
+                "time-remaining": "बचा हुआ समय:",
+                "times-up": "⏰ समय समाप्त!",
+                "revealed-words": "आपने {total} में से {found} बज़ वर्ड्स खोजे।",
+                "listening": "🎤 सुन रहा है...",
+                "speech-error": "इस ब्राउज़र में स्पीच रिकग्निशन समर्थित नहीं है"
+            },
+            te: {
+                "game-title": "🎯 బజ్ వర్డ్ చాలెంజ్",
+                "game-subtitle": "మీరు ఎంచుకున్న అంశం గురించి ట్రెండింగ్ బజ్ వర్డ్‌లను ఊహించండి!",
+                "choose-topic": "మీ అంశాన్ని ఎంచుకోండి",
+                "select-topic-desc": "ఈ రెండు యాదృచ్ఛికంగా ఎంచుకున్న అంశాలలో ఒకదాన్ని ఎంచుకోండి:",
+                "get-new-topics": "🔄 కొత్త అంశాలను పొందండి",
+                "generating-words": "🔍 బజ్ వర్డ్‌లను రూపొందిస్తోంది...",
+                "please-wait": "మేము మీ అంశం కోసం ట్రెండింగ్ పదాలను తీసుకువస్తున్నప్పుడు దయచేసి వేచి ఉండండి।",
+                "preview-desc": "మీరు ఊహించాల్సిన బజ్ వర్డ్‌లు ఇవి (అన్నీ దాచబడ్డాయి):",
+                "start-game": "🎮 గేమ్ ప్రారంభించండి",
+                "back-to-topics": "← అంశాలకు తిరిగి వెళ్ళండి",
+                "score": "స్కోర్",
+                "ready-listening": "వినడం ప్రారంభించడానికి సిద్ధంగా ఉంది...",
+                "voice-input-placeholder": "మీ వాయిస్ ఇన్‌పుట్ ఇక్కడ కనిపిస్తుంది",
+                "your-attempts": "మీ ప్రయత్నాలు:",
+                "buzz-words-for": "బజ్ వర్డ్‌లు",
+                "game-over": "🎉 గేమ్ ముగిసింది!",
+                "all-buzz-words": "అన్ని బజ్ వర్డ్‌లు",
+                "game-statistics": "గేమ్ గణాంకాలు",
+                "topic": "అంశం:",
+                "total-score": "మొత్తం స్కోర్:",
+                "words-found": "దొరికిన పదాలు:",
+                "words-missed": "తప్పిన పదాలు:",
+                "time-used": "ఉపయోగించిన సమయం:",
+                "success-rate": "విజయ రేటు:",
+                "play-again": "🔄 మళ్లీ ఆడండి",
+                "points": "పాయింట్లు",
+                "seconds": "సెకన్లు",
+                "congratulations": "🎉 అభినందనలు! మీరు అన్ని బజ్ వర్డ్‌లను కనుగొన్నారు!",
+                "time-remaining": "మిగిలిన సమయం:",
+                "times-up": "⏰ సమయం ముగిసింది!",
+                "revealed-words": "మీరు {total}లో {found} బజ్ వర్డ్‌లను వెల్లడించారు।",
+                "listening": "🎤 వింటోంది...",
+                "speech-error": "ఈ బ్రౌజర్‌లో స్పీచ్ రికగ్నిషన్ మద్దతు లేదు"
+            }
+        };
+
+        // Static topics list
+        const topics = [
+            "Artificial Intelligence", "Climate Change", "Cryptocurrency", "Social Media", 
+            "Remote Work", "Electric Vehicles", "Mental Health", "Sustainability",
+            "Blockchain", "Virtual Reality", "Fitness", "Food Technology",
+            "Space Exploration", "Gaming", "Education Technology", "Healthcare Innovation",
+            "Fashion", "Travel", "Entrepreneurship", "Digital Marketing"
+        ];
+
+        // Game state
+        let selectedTopic = '';
+        let buzzWords = [];
+        let currentScore = 0;
+        let timeLeft = 90;
+        let gameTimer = null;
+        let recognition = null;
+        let isListening = false;
+        let inputHistoryArray = [];
+        let revealedWords = new Set();
+        let currentLanguage = 'en';
+
+        // i18n functions
+        function t(key, params = {}) {
+            let text = translations[currentLanguage][key] || translations['en'][key] || key;
+            // Replace parameters in text like {found} and {total}
+            Object.keys(params).forEach(param => {
+                text = text.replace(`{${param}}`, params[param]);
+            });
+            return text;
+        }
+
+        function updateTexts() {
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                element.textContent = t(key);
+            });
+            
+            // Update placeholder texts
+            const placeholderElements = document.querySelectorAll('[data-i18n-placeholder]');
+            placeholderElements.forEach(element => {
+                const key = element.getAttribute('data-i18n-placeholder');
+                element.placeholder = t(key);
+            });
+        }
+
+        function changeLanguage(language) {
+            currentLanguage = language;
+            updateTexts();
+            localStorage.setItem('buzzWordGameLanguage', language);
+        }
+
+        // DOM elements
+        const topicSelection = document.getElementById('topicSelection');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const buzzWordsPreview = document.getElementById('buzzWordsPreview');
+        const gameArea = document.getElementById('gameArea');
+        const gameOver = document.getElementById('gameOver');
+        const topic1Btn = document.getElementById('topic1');
+        const topic2Btn = document.getElementById('topic2');
+        const refreshTopicsBtn = document.getElementById('refreshTopics');
+        const startGameBtn = document.getElementById('startGame');
+        const backToTopicsBtn = document.getElementById('backToTopics');
+        const playAgainBtn = document.getElementById('playAgain');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const currentScoreDisplay = document.getElementById('currentScore');
+        const voiceStatus = document.getElementById('voiceStatus');
+        const userInputDisplay = document.getElementById('userInputDisplay');
+        const inputHistoryElement = document.getElementById('inputHistory');
+        const buzzWordsTable = document.getElementById('buzzWordsTable');
+        const selectedTopicTitle = document.getElementById('selectedTopicTitle');
+        const gameTopicTitle = document.getElementById('gameTopicTitle');
+        const finalScore = document.getElementById('finalScore');
+        const gameResult = document.getElementById('gameResult');
+        const previewTable = document.getElementById('previewTable');
+        const finalBuzzWordsList = document.getElementById('finalBuzzWordsList');
+        const finalTopicName = document.getElementById('finalTopicName');
+        const finalScoreValue = document.getElementById('finalScoreValue');
+        const wordsFoundCount = document.getElementById('wordsFoundCount');
+        const wordsMissedCount = document.getElementById('wordsMissedCount');
+        const timeUsed = document.getElementById('timeUsed');
+        const successRate = document.getElementById('successRate');
+        const languageSelect = document.getElementById('languageSelect');
+
+        // Initialize the game
+        function init() {
+            // Load saved language preference
+            const savedLanguage = localStorage.getItem('buzzWordGameLanguage');
+            if (savedLanguage && translations[savedLanguage]) {
+                currentLanguage = savedLanguage;
+                languageSelect.value = savedLanguage;
+            }
+            
+            showRandomTopics();
+            setupEventListeners();
+            initSpeechRecognition();
+            updateTexts();
+        }
+
+        function setupEventListeners() {
+            topic1Btn.addEventListener('click', () => selectTopic(topic1Btn.textContent));
+            topic2Btn.addEventListener('click', () => selectTopic(topic2Btn.textContent));
+            refreshTopicsBtn.addEventListener('click', showRandomTopics);
+            startGameBtn.addEventListener('click', startGame);
+            backToTopicsBtn.addEventListener('click', showTopicSelection);
+            playAgainBtn.addEventListener('click', showTopicSelection);
+            languageSelect.addEventListener('change', (e) => changeLanguage(e.target.value));
+        }
+
+        function showRandomTopics() {
+            const shuffled = [...topics].sort(() => 0.5 - Math.random());
+            topic1Btn.textContent = shuffled[0];
+            topic2Btn.textContent = shuffled[1];
+        }
+
+        function showTopicSelection() {
+            topicSelection.style.display = 'block';
+            loadingScreen.style.display = 'none';
+            buzzWordsPreview.style.display = 'none';
+            gameArea.style.display = 'none';
+            gameOver.style.display = 'none';
+            resetGame();
+        }
+
+        function resetGame() {
+            currentScore = 0;
+            timeLeft = 90;
+            inputHistoryArray = [];
+            revealedWords.clear();
+            buzzWords = [];
+            if (gameTimer) clearInterval(gameTimer);
+            if (recognition && isListening) {
+                recognition.stop();
+                isListening = false;
+            }
+        }
+
+        async function selectTopic(topic) {
+            selectedTopic = topic;
+            selectedTopicTitle.textContent = topic;
+            gameTopicTitle.textContent = topic;
+            
+            topicSelection.style.display = 'none';
+            loadingScreen.style.display = 'block';
+            
+            try {
+                await generateBuzzWords(topic);
+                loadingScreen.style.display = 'none';
+                buzzWordsPreview.style.display = 'block';
+                displayPreviewTable();
+            } catch (error) {
+                console.error('Error generating buzz words:', error);
+                alert('Failed to generate buzz words. Please try again.');
+                showTopicSelection();
+            }
+        }
+
+        async function generateBuzzWords(topic) {
+            try {
+                // Try to use actual LLM API if available
+                const response = await callLLMAPI(topic);
+                if (response && response.length > 0) {
+                    buzzWords = response;
+                    return;
+                }
+            } catch (error) {
+                console.log('LLM API not available, using fallback data');
+            }
+            
+            // Fallback to predefined buzz words
+            const predefinedBuzzWords = {
+                "Artificial Intelligence": [
+                    {word: "Machine Learning", score: 100},
+                    {word: "Neural Networks", score: 95},
+                    {word: "Deep Learning", score: 90},
+                    {word: "Automation", score: 85},
+                    {word: "Algorithms", score: 80},
+                    {word: "Natural Language Processing", score: 75},
+                    {word: "Computer Vision", score: 70},
+                    {word: "Robotics", score: 65},
+                    {word: "Data Science", score: 60},
+                    {word: "Predictive Analytics", score: 55},
+                    {word: "Chatbots", score: 50},
+                    {word: "Big Data", score: 45},
+                    {word: "Cloud Computing", score: 40},
+                    {word: "Internet of Things", score: 35},
+                    {word: "Cybersecurity", score: 30}
+                ],
+                "Climate Change": [
+                    {word: "Global Warming", score: 100},
+                    {word: "Carbon Emissions", score: 95},
+                    {word: "Renewable Energy", score: 90},
+                    {word: "Greenhouse Gases", score: 85},
+                    {word: "Sustainability", score: 80},
+                    {word: "Paris Agreement", score: 75},
+                    {word: "Solar Power", score: 70},
+                    {word: "Wind Energy", score: 65},
+                    {word: "Deforestation", score: 60},
+                    {word: "Sea Level Rise", score: 55},
+                    {word: "Carbon Footprint", score: 50},
+                    {word: "Electric Vehicles", score: 45},
+                    {word: "Green Technology", score: 40},
+                    {word: "Environmental Impact", score: 35},
+                    {word: "Eco-friendly", score: 30}
+                ],
+                "Cryptocurrency": [
+                    {word: "Bitcoin", score: 100},
+                    {word: "Blockchain", score: 95},
+                    {word: "Ethereum", score: 90},
+                    {word: "Mining", score: 85},
+                    {word: "Digital Wallet", score: 80},
+                    {word: "Decentralized", score: 75},
+                    {word: "Smart Contracts", score: 70},
+                    {word: "NFT", score: 65},
+                    {word: "DeFi", score: 60},
+                    {word: "Altcoin", score: 55},
+                    {word: "Cold Storage", score: 50},
+                    {word: "Hash Rate", score: 45},
+                    {word: "Proof of Work", score: 40},
+                    {word: "Exchange", score: 35},
+                    {word: "Volatility", score: 30}
+                ],
+                "Social Media": [
+                    {word: "Influencer", score: 100},
+                    {word: "Viral", score: 95},
+                    {word: "Engagement", score: 90},
+                    {word: "Hashtag", score: 85},
+                    {word: "Content Creator", score: 80},
+                    {word: "Algorithm", score: 75},
+                    {word: "Stories", score: 70},
+                    {word: "Live Streaming", score: 65},
+                    {word: "Reels", score: 60},
+                    {word: "Followers", score: 55},
+                    {word: "Feed", score: 50},
+                    {word: "Brand Awareness", score: 45},
+                    {word: "User Generated Content", score: 40},
+                    {word: "Social Proof", score: 35},
+                    {word: "Digital Marketing", score: 30}
+                ]
+            };
+            
+            // Use predefined data or generate dynamic buzz words
+            if (predefinedBuzzWords[topic]) {
+                buzzWords = predefinedBuzzWords[topic];
+            } else {
+                buzzWords = generateDynamicBuzzWords(topic);
+            }
+        }
+
+        async function callLLMAPI(topic) {
+            // This function can be implemented to call actual LLM APIs
+            // For now, it returns null to indicate no API is available
+            // You can integrate with APIs like OpenAI, Claude, or others here
+            
+            // Example implementation:
+            /*
+            const response = await fetch('/api/generate-buzz-words', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ topic, count: 15 })
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                return data.buzzWords;
+            }
+            */
+            
+            return null;
+        }
+
+        function generateDynamicBuzzWords(topic) {
+            // Generate topic-specific buzz words based on common patterns
+            const topicBuzzWords = {
+                "Remote Work": [
+                    {word: "Work From Home", score: 100},
+                    {word: "Virtual Meetings", score: 95},
+                    {word: "Digital Nomad", score: 90},
+                    {word: "Zoom Fatigue", score: 85},
+                    {word: "Home Office", score: 80},
+                    {word: "Flexible Schedule", score: 75},
+                    {word: "Online Collaboration", score: 70},
+                    {word: "Cloud Computing", score: 65},
+                    {word: "Work Life Balance", score: 60},
+                    {word: "Productivity Tools", score: 55},
+                    {word: "Video Conferencing", score: 50},
+                    {word: "Remote Team", score: 45},
+                    {word: "Distributed Workforce", score: 40},
+                    {word: "Telecommuting", score: 35},
+                    {word: "Asynchronous Work", score: 30}
+                ],
+                "Electric Vehicles": [
+                    {word: "Tesla", score: 100},
+                    {word: "Battery Life", score: 95},
+                    {word: "Charging Station", score: 90},
+                    {word: "Zero Emissions", score: 85},
+                    {word: "Autopilot", score: 80},
+                    {word: "Lithium Ion", score: 75},
+                    {word: "Range Anxiety", score: 70},
+                    {word: "Fast Charging", score: 65},
+                    {word: "Sustainable Transport", score: 60},
+                    {word: "Electric Motor", score: 55},
+                    {word: "Regenerative Braking", score: 50},
+                    {word: "Green Technology", score: 45},
+                    {word: "Carbon Neutral", score: 40},
+                    {word: "Smart Grid", score: 35},
+                    {word: "EV Infrastructure", score: 30}
+                ]
+            };
+
+            if (topicBuzzWords[topic]) {
+                return topicBuzzWords[topic];
+            }
+
+            // Fallback: generate generic buzz words
+            const genericWords = [
+                "Innovation", "Technology", "Digital", "Modern", "Advanced", 
+                "Future", "Smart", "Efficient", "Revolutionary", "Cutting-edge", 
+                "Breakthrough", "Trending", "Popular", "Emerging", "Global"
+            ];
+            
+            return genericWords.map((word, index) => ({
+                word: `${topic} ${word}`,
+                score: 100 - (index * 5)
+            }));
+        }
+
+        function displayPreviewTable() {
+            previewTable.innerHTML = `
+                <table class="buzz-words-table">
+                    <tbody>
+                        ${buzzWords.map((item, index) => `
+                            <tr class="buzz-word-row">
+                                <td class="buzz-word-item hidden">${index + 1}. ???</td>
+                                <td class="score-value">${item.score} pts</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function startGame() {
+            buzzWordsPreview.style.display = 'none';
+            gameArea.style.display = 'grid';
+            
+            displayBuzzWordsTable();
+            startTimer();
+            startVoiceRecognition();
+            updateScore();
+        }
+
+        function displayBuzzWordsTable() {
+            buzzWordsTable.innerHTML = buzzWords.map((item, index) => `
+                <tr class="buzz-word-row">
+                    <td class="buzz-word-item hidden" data-word="${item.word.toLowerCase()}" data-index="${index}">
+                        ${index + 1}. ???
+                    </td>
+                    <td class="score-value">${item.score} pts</td>
+                </tr>
+            `).join('');
+        }
+
+        function startTimer() {
+            timerDisplay.textContent = timeLeft;
+            gameTimer = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function initSpeechRecognition() {
+            if ('webkitSpeechRecognition' in window) {
+                recognition = new webkitSpeechRecognition();
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = 'en-US';
+
+                recognition.onresult = handleSpeechResult;
+                recognition.onerror = handleSpeechError;
+                recognition.onend = handleSpeechEnd;
+            } else {
+                voiceStatus.textContent = t('speech-error');
+            }
+        }
+
+        function startVoiceRecognition() {
+            if (recognition && !isListening) {
+                recognition.start();
+                isListening = true;
+                voiceStatus.textContent = t('listening');
+            }
+        }
+
+        function handleSpeechResult(event) {
+            let finalTranscript = '';
+            
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                if (event.results[i].isFinal) {
+                    finalTranscript += event.results[i][0].transcript;
+                }
+            }
+            
+            if (finalTranscript) {
+                const userInput = finalTranscript.trim().toLowerCase();
+                userInputDisplay.textContent = finalTranscript.trim();
+                
+                // Add to history
+                addToInputHistory(finalTranscript.trim());
+                
+                // Check for matches
+                checkForMatches(userInput);
+            }
+        }
+
+        function handleSpeechError(event) {
+            console.error('Speech recognition error:', event.error);
+            voiceStatus.textContent = t('speech-error');
+            isListening = false;
+            
+            // Restart recognition after a short delay
+            setTimeout(() => {
+                if (timeLeft > 0 && gameArea.style.display === 'grid') {
+                    startVoiceRecognition();
+                }
+            }, 1000);
+        }
+
+        function handleSpeechEnd() {
+            isListening = false;
+            
+            // Restart recognition if game is still active
+            if (timeLeft > 0 && gameArea.style.display === 'grid') {
+                setTimeout(() => startVoiceRecognition(), 500);
+            }
+        }
+
+        function addToInputHistory(input) {
+            inputHistoryArray.unshift(input);
+            if (inputHistoryArray.length > 10) inputHistoryArray.pop();
+            
+            inputHistoryElement.innerHTML = inputHistoryArray.map((item, index) => `
+                <div class="user-input-display ${index === 0 ? 'latest' : ''}">${item}</div>
+            `).join('');
+        }
+
+        function checkForMatches(userInput) {
+            buzzWords.forEach((item, index) => {
+                if (revealedWords.has(index)) return;
+                
+                const buzzWord = item.word.toLowerCase();
+                if (isCloseMatch(userInput, buzzWord)) {
+                    revealBuzzWord(index);
+                    currentScore += item.score;
+                    updateScore();
+                    
+                    // Highlight the match in input display
+                    userInputDisplay.classList.add('correct-match');
+                    setTimeout(() => userInputDisplay.classList.remove('correct-match'), 2000);
+                    
+                    // Check if all words are revealed
+                    if (revealedWords.size === buzzWords.length) {
+                        endGame(true);
+                    }
+                }
+            });
+        }
+
+        function isCloseMatch(userInput, buzzWord) {
+            // Direct match
+            if (userInput.includes(buzzWord) || buzzWord.includes(userInput)) {
+                return true;
+            }
+            
+            // Word-by-word matching
+            const userWords = userInput.split(' ');
+            const buzzWords = buzzWord.split(' ');
+            
+            return buzzWords.some(bWord => 
+                userWords.some(uWord => 
+                    uWord.length > 2 && (
+                        uWord === bWord || 
+                        bWord.includes(uWord) || 
+                        uWord.includes(bWord) ||
+                        levenshteinDistance(uWord, bWord) <= Math.min(2, Math.floor(bWord.length / 3))
+                    )
+                )
+            );
+        }
+
+        function levenshteinDistance(str1, str2) {
+            const matrix = [];
+            
+            for (let i = 0; i <= str2.length; i++) {
+                matrix[i] = [i];
+            }
+            for (let j = 0; j <= str1.length; j++) {
+                matrix[0][j] = j;
+            }
+            
+            for (let i = 1; i <= str2.length; i++) {
+                for (let j = 1; j <= str1.length; j++) {
+                    if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+                        matrix[i][j] = matrix[i - 1][j - 1];
+                    } else {
+                        matrix[i][j] = Math.min(
+                            matrix[i - 1][j - 1] + 1,
+                            matrix[i][j - 1] + 1,
+                            matrix[i - 1][j] + 1
+                        );
+                    }
+                }
+            }
+            
+            return matrix[str2.length][str1.length];
+        }
+
+        function revealBuzzWord(index) {
+            revealedWords.add(index);
+            const wordElement = document.querySelector(`[data-index="${index}"]`);
+            if (wordElement) {
+                wordElement.textContent = `${index + 1}. ${buzzWords[index].word}`;
+                wordElement.classList.remove('hidden');
+                wordElement.classList.add('revealed');
+            }
+        }
+
+        function updateScore() {
+            currentScoreDisplay.textContent = currentScore;
+        }
+
+        function endGame(allRevealed = false) {
+            if (gameTimer) clearInterval(gameTimer);
+            if (recognition && isListening) {
+                recognition.stop();
+                isListening = false;
+            }
+            
+            gameArea.style.display = 'none';
+            gameOver.style.display = 'block';
+            
+            // Calculate statistics
+            const wordsFound = revealedWords.size;
+            const wordsMissed = buzzWords.length - wordsFound;
+            const timeElapsed = 90 - timeLeft;
+            const successRateValue = Math.round((wordsFound / buzzWords.length) * 100);
+            
+            // Update main score display
+            finalScore.textContent = `${currentScore} ${t('points')}`;
+            
+            // Update game result message
+            if (allRevealed) {
+                gameResult.innerHTML = `
+                    <p>${t('congratulations')}</p>
+                    <p>${t('time-remaining')} ${timeLeft} ${t('seconds')}</p>
+                `;
+            } else {
+                gameResult.innerHTML = `
+                    <p>${t('times-up')}</p>
+                    <p>${t('revealed-words', {found: wordsFound, total: buzzWords.length})}</p>
+                `;
+            }
+            
+            // Update statistics
+            finalTopicName.textContent = selectedTopic;
+            finalScoreValue.textContent = `${currentScore} ${t('points')}`;
+            wordsFoundCount.textContent = `${wordsFound} / ${buzzWords.length}`;
+            wordsMissedCount.textContent = wordsMissed;
+            timeUsed.textContent = `${timeElapsed} ${t('seconds')}`;
+            successRate.textContent = `${successRateValue}%`;
+            
+            // Display all buzz words with status
+            displayFinalBuzzWords();
+        }
+        
+        function displayFinalBuzzWords() {
+            finalBuzzWordsList.innerHTML = buzzWords.map((item, index) => {
+                const isRevealed = revealedWords.has(index);
+                const statusClass = isRevealed ? 'revealed' : 'missed';
+                const statusIcon = isRevealed ? '✅' : '❌';
+                
+                return `
+                    <div class="final-buzz-word-item ${statusClass}">
+                        <span>${statusIcon} ${item.word}</span>
+                        <span>${item.score} ${t('points').toLowerCase()}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Initialize the game when page loads
+        init();
+    </script>
+</body>
+</html>
