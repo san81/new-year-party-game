@@ -100,7 +100,25 @@ const leftLayer = document.querySelector('.layer-left');
             resetTimer();
             updateTimerPosition();
             updateJsonItem();
+            
+            // Clear all voice display areas for new game
+            clearVoiceDisplays();
             startVoiceInputControl();
+        }
+        
+        function clearVoiceDisplays() {
+            if (typeof listeningStatus !== 'undefined') {
+                listeningStatus.textContent = 'Ready to start';
+                listeningStatus.className = 'voiceDisplay';
+            }
+            if (typeof userInput !== 'undefined') {
+                userInput.textContent = 'Your answers will appear here';
+                userInput.className = 'voiceDisplay';
+            }
+            if (typeof feedbackMessage !== 'undefined') {
+                feedbackMessage.textContent = 'Game feedback';
+                feedbackMessage.className = 'voiceDisplay';
+            }
         }
 
         function switchAnimation() {
@@ -168,7 +186,12 @@ const leftLayer = document.querySelector('.layer-left');
                 if (typeof isListening !== 'undefined') {
                     isListening = false;
                 }
-                usrVoiceInput.textContent = 'Game Over!';
+                if (typeof listeningStatus !== 'undefined') {
+                    listeningStatus.textContent = 'Game Over!';
+                }
+                if (typeof feedbackMessage !== 'undefined') {
+                    feedbackMessage.textContent = 'Game ended';
+                }
             } catch (e) {
                 // Ignore errors when stopping
             }
