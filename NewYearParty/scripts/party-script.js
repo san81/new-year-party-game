@@ -17,7 +17,7 @@ const leftLayer = document.querySelector('.layer-left');
         let leftSwitches = 0;
         let rightSwitches = 0;
         let timerInterval;
-        let timeLeft = 5;
+        let timeLeft = 10;
         let jsonIndex = 0;
         let selectedCategory;
         let expectedValue;
@@ -123,6 +123,7 @@ const leftLayer = document.querySelector('.layer-left');
             resetTimer();
             updateTimerPosition();
             updateJsonItem();
+            startVoiceInputControl();
         }
 
         function resetAnimations() {
@@ -159,6 +160,19 @@ const leftLayer = document.querySelector('.layer-left');
             timerDisplay.textContent = '0';
             categorySelection.style.display = 'block';
 
+            // Stop voice recognition when game ends
+            try {
+                if (typeof recognition !== 'undefined' && recognition) {
+                    recognition.stop();
+                }
+                if (typeof isListening !== 'undefined') {
+                    isListening = false;
+                }
+                usrVoiceInput.textContent = 'Game Over!';
+            } catch (e) {
+                // Ignore errors when stopping
+            }
+
             // Trigger bomb blast on the completed side
             triggerBombBlast(isLeftActive ? 'left' : 'right');
             jsonItemDisplay.innerHTML += "<div>"+expectedValue+"</div>";
@@ -171,13 +185,18 @@ const leftLayer = document.querySelector('.layer-left');
                 timerDisplay.textContent = timeLeft;
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
+                    // Stop voice input and end game when timer expires
+                    if (typeof recognition !== 'undefined' && recognition) {
+                        recognition.stop();
+                    }
+                    stopAnimation();
                 }
             }, 1000);
         }
 
         function resetTimer() {
             clearInterval(timerInterval);
-            timeLeft = 5;
+            timeLeft = 10;
             timerDisplay.textContent = timeLeft;
             startTimer();
         }
