@@ -43,14 +43,43 @@
             0% { width: 0; }
             100% { width: 50%; }
         }
-        .voiceDisplay {
+        .voiceDisplayContainer {
             position: absolute;
             bottom: 70px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 10;
-            font-size: 50px;
-            font-weight: 10;
+            text-align: center;
+            width: 80%;
+        }
+        .voiceDisplay {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 5px 0;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        #listeningStatus {
+            background-color: rgba(0, 123, 255, 0.2);
+            color: #007bff;
+        }
+        #userInput {
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #333;
+            min-height: 30px;
+        }
+        #feedbackMessage {
+            background-color: rgba(248, 249, 250, 0.9);
+            color: #495057;
+        }
+        .correct-answer {
+            background-color: rgba(40, 167, 69, 0.3) !important;
+            color: #155724 !important;
+            border: 2px solid #28a745;
+        }
+        .incorrect-answer {
+            background-color: rgba(220, 53, 69, 0.2) !important;
+            color: #721c24 !important;
         }
         .controls {
             position: absolute;
@@ -172,7 +201,11 @@
     <div class="container">
         <div class="layer-left"></div>
         <div class="layer-right"></div>
-        <div id="usrVoiceInput" class="voiceDisplay"> user voice input</div>
+        <div class="voiceDisplayContainer">
+            <div id="listeningStatus" class="voiceDisplay">Ready to start</div>
+            <div id="userInput" class="voiceDisplay">Your answers will appear here</div>
+            <div id="feedbackMessage" class="voiceDisplay">Game feedback</div>
+        </div>
         <div class="controls">
             <button id="toggleBtn">Pause</button>
             <button id="restartBtn">Restart</button>
