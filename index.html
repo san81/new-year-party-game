@@ -1,58 +1,581 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Fun Game</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 20px;
-        }
-        h1 {
-            color: #ff5722;
-        }
-        h2 {
-            color: #03a9f4;
-        }
-        ul {
-            list-style-type: disc;
-            padding-left: 20px;
-        }
-        .pro-tip {
-            font-style: italic;
-            color: #4caf50;
-        }
-        .cta {
-            margin-top: 20px;
-            font-weight: bold;
-            color: #ff5722;
-        }
-    </style>
+<title>Buzzword Bingo</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+  }
+
+  #main-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    width: 90%;
+    max-width: 600px;
+    text-align: center;
+  }
+
+  h2 {
+    color: #007bff;
+  }
+
+  /* Common Button Styling */
+  .game-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+  }
+
+  .game-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+  }
+
+  .game-button:active {
+    transform: translateY(0px);
+  }
+
+  .game-button:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Section Styling */
+  #topic-selection, #game-area, #game-over {
+    padding: 15px;
+    margin-top: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+
+  #game-area, #game-over {
+    display: none;
+  }
+
+  /* Specific Element Styling */
+  #score, #timer {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 10px 0;
+    color: #333;
+  }
+  #score { color: #28a745; } /* Green for score */
+  #timer { color: #dc3545; } /* Red for timer */
+
+
+  /* table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 5px;
+    text-align: left;
+  } */
+
+  #buzzwords-table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  #buzzwords-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  #voice-input {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ced4da; /* Slightly darker border */
+    min-height: 2.5em;
+    background-color: #e9ecef; /* Lighter gray */
+    border-radius: 4px;
+    color: #495057;
+  }
+
+  .hidden-word {
+    color: #adb5bd; /* Lighter gray for hidden words */
+    font-style: italic;
+    cursor: default;
+    background-color: #f8f9fa;
+  }
+
+  .revealed-word {
+    color: #212529; /* Darker for revealed words */
+    font-weight: bold;
+    background-color: #d4edda; /* Light green background */
+  }
+
+  .just-revealed {
+    background-color: #ffc107; /* Yellow highlight */
+    transition: background-color 0.7s ease-out;
+  }
+</style>
 </head>
 <body>
-    <h1>🎉 Ultimate Fun Game for Friends & Family Gatherings! 🎉</h1>
 
-    <h2>Challenge:</h2>
-    <p>Spot and shout out the name of the object on the screen in just <strong>5 seconds</strong>!</p>
+  <div id="main-container">
+    <div id="topic-selection">
+      <h2>Choose a Topic:</h2>
+      <button id="topic1-btn" class="game-button">Topic 1</button>
+      <button id="topic2-btn" class="game-button">Topic 2</button>
+    </div>
 
-    <h2>How to Play:</h2>
-    <ul>
-        <li>Grab a buddy or split into two groups—let the competition begin!</li>
-        <li>The host casts the game onto a shared screen that everyone can see.</li>
-        <li>Pick a category and dive in!</li>
-        <li>Each player/group has <strong>5 seconds</strong> to correctly identify the object on the screen.</li>
-        <li>The host clicks the <strong>“Right Answer”</strong> button to track points for each turn.</li>
-        <li>If one team misses, the other scores!</li>
-        <li>Replay the game in the same category or spice it up by switching to a new one.</li>
-    </ul>
+    <div id="game-area">
+      <div id="score">Score: 0</div>
+      <div id="timer">Time: 90s</div> {/* Default from initialTimeLimit */}
+      <div id="voice-input">Click "Start Game" to speak.</div>
+      <div id="buzzwords-table">
+        {/* Table will be generated here */}
+      </div>
+      <button id="start-game-btn" class="game-button">Start Game</button>
+      <button id="switch-topic-btn" class="game-button">Go Back/Switch Topic</button>
+    </div>
 
-    <p class="pro-tip">✨ Pro Tip: Add your own categories or custom items to make the game uniquely yours and extra entertaining!</p>
+    <div id="game-over">
+      <h2 id="game-over-title">Game Over!</h2>
+      <div id="game-over-message" style="margin-bottom:10px; font-size: 1.1em;"></div>
+      <div id="final-score" style="font-weight:bold; margin-bottom:15px;">Final Score: 0</div>
+      <button id="play-again-btn" class="game-button">Play Again?</button>
+    </div>
+  </div>
 
-    <p class="cta">Ready to Play? Click below and let the laughter (and competition) begin! 🕹️🎉</p>
+  <script>
+    const allTopics = [
+      "Artificial Intelligence",
+      "Climate Change",
+      "Global Economy",
+      "Space Exploration",
+      "Pop Culture Trends",
+      "Renewable Energy",
+      "Blockchain Technology",
+      "Future of Work",
+      "Sustainable Agriculture",
+      "Cybersecurity Threats"
+    ];
 
-    <a href="https://san81.github.io/new-year-party-game/NewYearParty/index.html" target="_blank"> Start The Game </a>
+    const topicSelectionDiv = document.getElementById('topic-selection');
+    const gameAreaDiv = document.getElementById('game-area');
+    const gameOverDiv = document.getElementById('game-over'); // Will be used later
 
+    let currentBuzzwords = []; // Stores { word: "buzzword", score: X, revealed: false }
+
+    const topicBuzzwordMap = {
+      "Artificial Intelligence": ["Machine Learning", "Neural Networks", "Deep Learning", "NLP", "Computer Vision", "AGI", "Reinforcement Learning", "Generative AI", "LLM", "Ethics in AI", "Robotics", "Automation", "Big Data", "TensorFlow", "PyTorch"],
+      "Climate Change": ["Global Warming", "Greenhouse Gases", "Renewable Energy", "Carbon Footprint", "Sustainability", "Paris Agreement", "Sea Level Rise", "Extreme Weather", "Deforestation", "Climate Action", "Fossil Fuels", "IPCC", "Ozone Layer", "Melting Ice Caps", "Drought"],
+      "Space Exploration": ["Rocket Launch", "Mars Rover", "International Space Station", "Astronaut", "Black Hole", "Galaxy", "Exoplanet", "NASA", "SpaceX", "Moon Landing", "Satellite", "Cosmic Rays", "Hubble Telescope", "James Webb Telescope", "Zero Gravity"],
+      "Global Economy": ["GDP", "Inflation", "Interest Rates", "Stock Market", "Recession", "Trade War", "Globalization", "Supply Chain", "Fiscal Policy", "Monetary Policy", "Emerging Markets", "Forex", "Cryptocurrency", "World Bank", "IMF"]
+    };
+
+    const topic1Btn = document.getElementById('topic1-btn');
+    const topic2Btn = document.getElementById('topic2-btn');
+    const buzzwordsTableDiv = document.getElementById('buzzwords-table');
+    const startGameBtn = document.getElementById('start-game-btn');
+    const switchTopicBtn = document.getElementById('switch-topic-btn');
+    const scoreDisplay = document.getElementById('score');
+    const timerDisplay = document.getElementById('timer');
+    const voiceInputDisplay = document.getElementById('voice-input');
+    const gameOverDiv = document.getElementById('game-over');
+    const gameOverMessageDisplay = document.getElementById('game-over-message');
+    const finalScoreDisplay = document.getElementById('final-score');
+    const playAgainBtn = document.getElementById('play-again-btn');
+
+
+    // Global Game State Variables
+    let score = 0;
+    let timeLeft = 90; // Initial value, will be reset in startGame and selectTopic
+    let timerInterval;
+    let gameActive = false;
+    const initialTimeLimit = 90;
+
+    // --- Web Speech API Setup ---
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition;
+
+    if (SpeechRecognition) {
+      recognition = new SpeechRecognition();
+      recognition.continuous = false; // Process one utterance at a time
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.onresult = (event) => {
+        if (!gameActive) return; // Ignore results if game is not active
+        const transcript = event.results[event.results.length - 1][0].transcript.trim();
+        voiceInputDisplay.textContent = `You said: ${transcript}`;
+        checkMatch(transcript);
+      };
+
+      recognition.onerror = (event) => {
+        console.error(`Speech recognition error: ${event.error}`);
+        if (event.error === 'no-speech' && gameActive) {
+          voiceInputDisplay.textContent = "No speech detected. Listening again...";
+        } else if (event.error === 'audio-capture' && gameActive) {
+          voiceInputDisplay.textContent = "Mic problem. Ensure it's enabled. Listening...";
+        } else if (gameActive) {
+          voiceInputDisplay.textContent = `Error: ${event.error}. Listening again...`;
+        }
+      };
+
+      recognition.onend = () => {
+        if (gameActive) { // Only restart if game is supposed to be active
+          try {
+            recognition.start(); // Restart listening for next input
+          } catch (e) {
+            console.error("Error restarting recognition:", e);
+            voiceInputDisplay.textContent = "Mic error, please try starting game again.";
+            // Potentially call endGame if mic fails repeatedly or critically
+          }
+        } else {
+          voiceInputDisplay.textContent = (voiceInputDisplay.textContent || "") + " (Mic off)";
+        }
+      };
+
+    } else {
+      console.error("Speech Recognition not supported by this browser.");
+      // startGameBtn is defined later, so we might need to handle this differently or assume it exists
+      // For now, log it. We'll ensure button is disabled if needed.
+    }
+    // --- End Web Speech API Setup ---
+
+    function getRandomTopics(topics) {
+      if (topics.length < 2) {
+        console.error("Not enough topics to choose from.");
+        return [];
+      }
+      let index1 = Math.floor(Math.random() * topics.length);
+      let index2 = Math.floor(Math.random() * topics.length);
+      while (index2 === index1) {
+        index2 = Math.floor(Math.random() * topics.length);
+      }
+      return [topics[index1], topics[index2]];
+    }
+
+    function displayTopicChoices() {
+      const selectedTopics = getRandomTopics(allTopics);
+      if (selectedTopics.length === 2) {
+        topic1Btn.textContent = selectedTopics[0];
+        topic1Btn.dataset.topic = selectedTopics[0];
+
+        topic2Btn.textContent = selectedTopics[1];
+        topic2Btn.dataset.topic = selectedTopics[1];
+      }
+    }
+
+    function selectTopic(event) {
+      const selectedTopic = event.target.dataset.topic;
+      fetchBuzzwords(selectedTopic); // This will also call displayBuzzwords
+
+      // Reset game state for the new topic
+      score = 0; // Reset score
+      timeLeft = initialTimeLimit; // Reset timer to initial
+      gameActive = false;
+      clearInterval(timerInterval);
+
+      scoreDisplay.textContent = 'Score: 0';
+      timerDisplay.textContent = `Time Left: ${initialTimeLimit}s`;
+      startGameBtn.disabled = false; // Enable by default
+      switchTopicBtn.disabled = false;
+
+      if (SpeechRecognition) {
+        voiceInputDisplay.textContent = "Mic ready. Click 'Start Game'.";
+        if (recognition && recognition.stop) { // ensure recognition is not running from a previous very quick switch
+             // recognition.stop(); // let onend handle the state if it was running
+        }
+      } else {
+        voiceInputDisplay.textContent = "Speech recognition not supported.";
+        startGameBtn.disabled = true; // Disable if not supported
+      }
+
+      topicSelectionDiv.style.display = 'none';
+      gameAreaDiv.style.display = 'block';
+      gameOverDiv.style.display = 'none'; // Ensure game over screen is hidden
+    }
+
+    function fetchBuzzwords(topic) {
+      console.log(`Fetching buzzwords for: ${topic}`);
+      if (topicBuzzwordMap.hasOwnProperty(topic)) {
+        const words = topicBuzzwordMap[topic];
+        currentBuzzwords = words.map((word, index) => ({
+          word: word,
+          score: 15 - index, // Score based on rank
+          revealed: false
+        }));
+        // console.log("Current Buzzwords:", currentBuzzwords); // Logged for dev, can be removed
+        displayBuzzwords(); // Call the new display function
+      } else {
+        console.error("No buzzwords found for this topic:", topic);
+        currentBuzzwords = [];
+        displayBuzzwords(); // Clear table even if no words found
+      }
+    }
+
+    function displayBuzzwords() {
+      buzzwordsTableDiv.innerHTML = ''; // Clear current table
+      if (!currentBuzzwords || currentBuzzwords.length === 0) {
+        buzzwordsTableDiv.innerHTML = '<p>No buzzwords to display.</p>';
+        return;
+      }
+
+      const table = document.createElement('table');
+      const tbody = document.createElement('tbody');
+
+      currentBuzzwords.forEach(buzzwordData => {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+
+        td.dataset.word = buzzwordData.word;
+        td.dataset.score = buzzwordData.score;
+
+        if (buzzwordData.revealed) {
+          td.textContent = buzzwordData.word;
+          td.className = 'revealed-word';
+        } else {
+          td.textContent = '*******'; // buzzwordData.word.replace(/./g, '*');
+          td.className = 'hidden-word';
+        }
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+      });
+
+      table.appendChild(tbody);
+      buzzwordsTableDiv.appendChild(table);
+    }
+
+
+    function startGame() {
+      score = 0; // Reset score at the start of every game
+      timeLeft = initialTimeLimit; // Use the constant
+      gameActive = true;
+
+      scoreDisplay.textContent = 'Score: 0'; // Explicitly set to 0
+      timerDisplay.textContent = `Time Left: ${initialTimeLimit}s`;
+      startGameBtn.disabled = true;
+      switchTopicBtn.disabled = true;
+
+      clearInterval(timerInterval); // Clear any pre-existing timer
+      timerInterval = setInterval(updateTimer, 1000);
+
+      // Reset revealed status of currentBuzzwords
+      if (currentBuzzwords && currentBuzzwords.length > 0) {
+        currentBuzzwords.forEach(bw => bw.revealed = false);
+        displayBuzzwords(); // Re-render to hide all words
+      }
+
+      console.log("Game started!");
+
+      if (recognition) {
+        voiceInputDisplay.textContent = "Listening...";
+        try {
+            recognition.start();
+        } catch (e) {
+            console.error("Error starting recognition on game start:", e);
+            voiceInputDisplay.textContent = "Could not start microphone.";
+            endGame("Mic error."); // End game if mic can't start
+            return;
+        }
+      } else {
+        voiceInputDisplay.textContent = "Speech recognition not available.";
+        // endGame("Speech recognition not available."); // Optionally end game
+      }
+    }
+
+    function updateTimer() {
+      timeLeft--;
+      timerDisplay.textContent = `Time Left: ${timeLeft}s`;
+      if (timeLeft <= 0) {
+        endGame("Time's up!");
+      }
+    }
+
+    function endGame(message) {
+      clearInterval(timerInterval);
+      gameActive = false; // This should be set first
+      if (recognition) {
+        // recognition.stop(); // onend will handle restart logic based on gameActive
+      }
+      startGameBtn.disabled = false; // Re-enable for consistency
+      switchTopicBtn.disabled = false; // Re-enable
+
+      console.log("Game Over:", message);
+      gameOverMessageDisplay.textContent = message;
+      finalScoreDisplay.textContent = `Final Score: ${score}`;
+
+      gameAreaDiv.style.display = 'none';
+      gameOverDiv.style.display = 'block';
+    }
+
+    function handlePlayAgain() {
+      gameOverDiv.style.display = 'none';
+      topicSelectionDiv.style.display = 'block'; // Show topic selection
+
+      // Resetting states similar to handleSwitchTopic/selectTopic
+      currentBuzzwords = [];
+      buzzwordsTableDiv.innerHTML = '';
+      score = 0;
+      scoreDisplay.textContent = 'Score: 0';
+      timeLeft = initialTimeLimit;
+      timerDisplay.textContent = `Time Left: ${initialTimeLimit}s`;
+
+      if (SpeechRecognition) {
+        voiceInputDisplay.textContent = "Mic ready. Click 'Start Game'."; // Reset for topic selection phase
+        startGameBtn.disabled = false;
+      } else {
+        voiceInputDisplay.textContent = "Speech recognition not supported.";
+        startGameBtn.disabled = true;
+      }
+      // Ensure game area is hidden, topic selection shown
+      gameAreaDiv.style.display = 'none';
+      displayTopicChoices(); // Get new random topics
+    }
+
+
+    function handleSwitchTopic() {
+      if (recognition && gameActive) { // If game was active, recognition might be running
+        // recognition.stop(); // Let onend handle it based on gameActive
+      }
+      clearInterval(timerInterval); // Stop game timer if running
+      gameActive = false; // Critical to set this before UI changes
+
+      topicSelectionDiv.style.display = 'block';
+      gameAreaDiv.style.display = 'none';
+      gameOverDiv.style.display = 'none';
+
+      displayTopicChoices(); // Refresh topic choices
+
+      // Reset game state variables and displays
+      currentBuzzwords = [];
+      buzzwordsTableDiv.innerHTML = '';
+      score = 0;
+      timeLeft = initialTimeLimit; // Reset timer variable
+
+      scoreDisplay.textContent = 'Score: 0';
+      timerDisplay.textContent = `Time Left: ${initialTimeLimit}s`;
+      startGameBtn.disabled = false; // Enable by default
+      switchTopicBtn.disabled = false;
+
+
+      if (SpeechRecognition) {
+        voiceInputDisplay.textContent = "Choose a new topic or start again with a random one.";
+        // If recognition was somehow active and not stopped by gameActive flag in onend:
+        // if (recognition && recognition.stop) recognition.stop(); // Defensive stop
+      } else {
+        voiceInputDisplay.textContent = "Speech recognition not supported.";
+        startGameBtn.disabled = true;
+      }
+      console.log("Switched topic, game area reset.");
+    }
+
+    function levenshteinDistance(s1, s2) {
+      s1 = s1.toLowerCase();
+      s2 = s2.toLowerCase();
+      const costs = [];
+      for (let i = 0; i <= s1.length; i++) {
+        let lastValue = i;
+        for (let j = 0; j <= s2.length; j++) {
+          if (i === 0) costs[j] = j;
+          else {
+            if (j > 0) {
+              let newValue = costs[j - 1];
+              if (s1.charAt(i - 1) !== s2.charAt(j - 1))
+                newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+              costs[j - 1] = lastValue;
+              lastValue = newValue;
+            }
+          }
+        }
+        if (i > 0) costs[s2.length] = lastValue;
+      }
+      return costs[s2.length];
+    }
+
+    function checkMatch(transcript) {
+      if (!gameActive) return;
+
+      let bestMatch = null;
+      let minDistance = Infinity;
+      let matchedIndex = -1;
+
+      currentBuzzwords.forEach((buzzword, index) => {
+        if (!buzzword.revealed) {
+          const distance = levenshteinDistance(transcript, buzzword.word);
+          const threshold = Math.floor(buzzword.word.length * 0.4); // Allow ~40% difference
+          // console.log(`Word: ${buzzword.word}, Transcript: ${transcript}, Distance: ${distance}, Threshold: ${threshold}`);
+
+          if (distance <= threshold && distance < minDistance) {
+            minDistance = distance;
+            bestMatch = buzzword;
+            matchedIndex = index;
+          }
+        }
+      });
+
+      if (bestMatch) {
+        currentBuzzwords[matchedIndex].revealed = true;
+        score += currentBuzzwords[matchedIndex].score;
+        scoreDisplay.textContent = `Score: ${score}`;
+        voiceInputDisplay.textContent = `Matched: ${bestMatch.word}!`;
+
+        displayBuzzwords(); // Re-render to show revealed word and apply base .revealed-word style
+
+        // Find the specific cell in the DOM to apply temporary highlight
+        const tableCells = buzzwordsTableDiv.querySelectorAll('td');
+        tableCells.forEach(cell => {
+          if (cell.dataset.word === bestMatch.word) {
+            cell.classList.add('just-revealed');
+            setTimeout(() => {
+              cell.classList.remove('just-revealed');
+              // displayBuzzwords(); // Optional: re-call to ensure only .revealed-word style remains if transition is complex
+            }, 1000); // Highlight for 1 second
+          }
+        });
+
+        const allRevealed = currentBuzzwords.every(bw => bw.revealed);
+        if (allRevealed) {
+          endGame("Congratulations! All words revealed!");
+        }
+      } else {
+        // voiceInputDisplay.textContent += " - No close match found."; // Appends to "You said: ..."
+      }
+    }
+
+    // Event Listeners
+    if (startGameBtn) {
+        startGameBtn.addEventListener('click', startGame);
+    }
+    switchTopicBtn.addEventListener('click', handleSwitchTopic);
+    topic1Btn.addEventListener('click', selectTopic);
+    topic2Btn.addEventListener('click', selectTopic);
+    playAgainBtn.addEventListener('click', handlePlayAgain);
+
+    // Initialize
+    displayTopicChoices();
+    if (!SpeechRecognition && startGameBtn) {
+        startGameBtn.disabled = true;
+        voiceInputDisplay.textContent = "Speech recognition not supported here.";
+    }
+
+
+    // Ensure game-area and game-over are hidden initially
+    gameAreaDiv.style.display = 'none';
+    gameOverDiv.style.display = 'none'; // Explicitly hide game over screen
+  </script>
 </body>
 </html>
