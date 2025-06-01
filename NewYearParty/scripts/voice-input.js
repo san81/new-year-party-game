@@ -9,7 +9,7 @@ if (!'webkitSpeechRecognition' in window) {
     recognition.interimResults = false;
 }
 
-function startVoiceInputControl(expectedValue) {
+function startVoiceInputControl() {
         if (!'webkitSpeechRecognition' in window) {
             // Not supported int his browser or user not authorized to access Microphone
             return;
@@ -20,8 +20,8 @@ function startVoiceInputControl(expectedValue) {
         recognition.onresult = (event) => {
           const transcript = event.results[0][0].transcript.toLowerCase(); // Lowercase for case-insensitive comparison
           usrVoiceInput.textContent = `You said: ${transcript}`;
-    
-          if (transcript === expectedValue) {
+          console.log(transcript+" compared to "+expectedValue)
+          if (transcript.toLowerCase() === expectedValue.toLowerCase()) {
             usrVoiceInput.textContent += ' - Correct!';
           } else {
             usrVoiceInput.textContent += ' - Incorrect.';

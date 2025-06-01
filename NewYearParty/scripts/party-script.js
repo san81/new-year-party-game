@@ -20,6 +20,7 @@ const leftLayer = document.querySelector('.layer-left');
         let timeLeft = 5;
         let jsonIndex = 0;
         let selectedCategory;
+        let expectedValue;
 
         
 
@@ -160,7 +161,7 @@ const leftLayer = document.querySelector('.layer-left');
 
             // Trigger bomb blast on the completed side
             triggerBombBlast(isLeftActive ? 'left' : 'right');
-            jsonItemDisplay.innerHTML += "<div>"+jsonData[selectedCategory][jsonIndex].slice(0, -4)+"</div>";
+            jsonItemDisplay.innerHTML += "<div>"+expectedValue+"</div>";
         }
 
         function startTimer() {
@@ -191,6 +192,7 @@ const leftLayer = document.querySelector('.layer-left');
 
         function updateJsonItem() {
             const item = jsonData[selectedCategory][jsonIndex];
+            expectedValue = jsonData[selectedCategory][jsonIndex].slice(0, -4)
             jsonItemDisplay.innerHTML = "<img src='items/"+selectedCategory+"/"+item+"'></img>"
             if (isLeftActive) {
                 jsonItemDisplay.style.left = '5%';
