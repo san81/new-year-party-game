@@ -20,3 +20,8 @@ Add your own categories or custom items to make the game uniquely yours and extr
 Click below and let the laughter (and competition) begin! 🕹️🎉  
 
 [Start The Game](#NewYearParty/index.html)
+
+
+We just introduced a second game which is about guessing the buzz words about a topic of your choice. 
+Give it a try here 
+[Buzz Word Game](https://san81.github.io/new-year-party-game/buzz-word-game.html)
